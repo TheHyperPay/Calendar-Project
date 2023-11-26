@@ -1,18 +1,29 @@
-import calendar.CalendarList
-import calendar.Date
-import event.Event
-import event.EventManager
+import mainProgram.programList
 
 fun main() {
-    val e1=Event(Date("2023/11/13", "10:00:00"), Date("2023/11/13", "16:00:00"),"ABC")
-    val e2=Event(Date("2023/11/17", "10:00:00"), Date("2023/11/17", "16:00:00"),"ABC")
-    val e3=Event(Date("2023/11/27", "10:00:00"), Date("2023/11/27", "16:00:00"),"ABC")
+    while(true) {
+        print("메뉴 번호를 선택하시오 (1:종료, 2:달력 조회, 3:이벤트 추가, 4:이벤트 조회)>>")
+        val select = readln().toInt()
 
-    EventManager.insertEvent(e1)
-    EventManager.insertEvent(e2)
-    EventManager.insertEvent(e3)
+            when (select) {
+                1 -> {
+                    println("프로그램을 종료합니다.")
+                    break
+                }
+                2 -> {
+                    programList.showThisMonth()
+                }
+                3 -> {
+                    programList.addEvent()
+                }
+                4 -> {
+                    programList.showSchedule()
+                }
+                else -> {
+                    println("1부터 4의 숫자중 하나를 선택하시오>>")
+                }
+            }
+        println()
+    }
 
-
-    val calendarPrint = CalendarList(2023, 11)
-    calendarPrint.printCalendar()
 }
