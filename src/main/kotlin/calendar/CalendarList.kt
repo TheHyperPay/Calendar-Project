@@ -1,6 +1,7 @@
 package calendar
 
 import event.EventManager
+import tools.*
 import java.util.*
 
 class CalendarList(private val year: Int, private val month: Int) {
@@ -25,17 +26,17 @@ class CalendarList(private val year: Int, private val month: Int) {
             currentDay++
             calendar.set(Calendar.DAY_OF_MONTH, currentDay)
 
-            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            /*if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                 println()
-            }
+            }*/
         }
     }
 
     private fun printDay(): Unit {
-        val dayOfMonth = formatNumber(calendar.get(Calendar.DAY_OF_MONTH))
+        val dayOfMonth = Tstring.formatNumber(calendar.get(Calendar.DAY_OF_MONTH))
         print(dayOfMonth)
 
-        val dayOfEvents=EventManager.searchEvents(Date("$year/${formatNumber(month)}/${dayOfMonth}","00:00:00"), false)
+        val dayOfEvents=EventManager.searchEvents(Date("$year/${Tstring.formatNumber(month)}/${dayOfMonth}","00:00:00"), false)
         if(dayOfEvents.isNotEmpty()) {
             print("(${dayOfEvents.count()})")
         }
@@ -48,10 +49,6 @@ class CalendarList(private val year: Int, private val month: Int) {
         } else {
             print("\t")
         }
-    }
-
-    private fun formatNumber(number: Int): String {
-        return String.format("%02d", number)
     }
 }
 

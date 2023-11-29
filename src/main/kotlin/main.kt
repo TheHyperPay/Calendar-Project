@@ -2,7 +2,7 @@ import mainProgram.programList
 
 fun main() {
     while(true) {
-        print("메뉴 번호를 선택하시오 (1:종료, 2:달력 조회, 3:이벤트 추가, 4:이벤트 조회)>>")
+        print("메뉴 번호를 선택하시오 (1:종료, 2:달력 조회, 3:이벤트 추가, 4:이벤트 조회, 5:하루 일정)>>")
         val select = readln().toInt()
 
             when (select) {
@@ -18,6 +18,9 @@ fun main() {
                 }
                 4 -> {
                     programList.showSchedule()
+                }
+                5 -> {
+                    programList.showTodayList()
                 }
                 else -> {
                     println("1부터 4의 숫자중 하나를 선택하시오>>")

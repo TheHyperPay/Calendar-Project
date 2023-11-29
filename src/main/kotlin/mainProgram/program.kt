@@ -4,6 +4,7 @@ import calendar.CalendarList
 import calendar.Date
 import event.Event
 import event.EventManager
+import event.TodayEvents
 
 object programList {
 
@@ -52,5 +53,18 @@ object programList {
         }
         else
             println("조회한 날짜에 이벤트가 없습니다.")
+    }
+
+    fun showTodayList()
+    {
+        print("조회할 이벤트의 연도를 입력하시오>>")
+        val year = readln().toInt()
+        print("조회할 이벤트의 월을 입력하시오>>")
+        val month = readln().toInt()
+        print("조회할 이벤트의 일을 입력하시오>>")
+        val day = readln().toInt()
+
+        //FIXME 조건 추가
+        TodayEvents.printEvents(year, month, day)
     }
 }
