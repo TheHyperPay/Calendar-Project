@@ -110,6 +110,13 @@ object EventManager {
     val file: String="File.txt"
 
     fun fileLink():Unit{
+        val jsonString = File(file).readText()
+        val events = Gson().fromJson(jsonString, Array<Event>::class.java)
+        eventList.clear()
+        eventList.addAll(events)
+    }
+
+    fun fileInsert() : Unit {
         val jsonString = Gson().toJson(eventList)
         File(file).writeText(jsonString)
         println("이벤트 저장 완료")
@@ -145,4 +152,5 @@ object EventManager {
 
         return tempList
     }
+
 }

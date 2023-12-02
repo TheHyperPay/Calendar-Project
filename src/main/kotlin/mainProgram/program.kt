@@ -125,7 +125,7 @@ object programList {
         val e = Event(title, Date(formattedStartDate, formattedStartTime), Date(formattedEndDate, formattedEndTime), contents)
 
         EventManager.insertEvent(e)
-        EventManager.fileLink()
+        EventManager.fileInsert()
     }
 
     fun showSchedule() {
