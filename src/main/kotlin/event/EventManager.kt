@@ -1,5 +1,6 @@
 package event
 
+import com.google.gson.Gson
 import calendar.Date
 import java.io.*
 import tools.*
@@ -109,19 +110,8 @@ object EventManager {
     val file: String="File.txt"
 
     fun fileLink():Unit{
-        val printWriter = PrintWriter(file)
-
-        for (x in eventList) {
-            val title = x.getTitle()
-            val startDate = x.getStartDate().getData()
-            val startTime = x.getStartDate().getTime()
-            val endDate = x.getEndDate().getData()
-            val endTime = x.getEndDate().getTime()
-            val contents = x.getContents()
-
-            printWriter.println("$title $startDate $startTime ~ $endDate $endTime $contents")
-        }
-        printWriter.close()
+        val jsonString = Gson().toJson(eventList)
+        File(file).writeText(jsonString)
         println("이벤트 저장 완료")
     }
 
@@ -143,23 +133,16 @@ object EventManager {
     fun searchSchedule(searchDate : String) : ArrayList<Event> {
         val tempList: ArrayList<Event> = ArrayList()
 
-        val lines = File(file).readLines()
+        val jsonString = File(file).readText()
 
-        for(x in lines) {
-            val temp = x.split(" ")
+        val events = Gson().fromJson(jsonString, Array<Event>::class.java)
 
-            val title = temp[0]
-            val startDate = temp[1]
-            val startTime = temp[2]
-            val endDate = temp[4]
-            val endTime = temp[5]
-            val contents = temp[6]
-
-            val event = Event(title, Date(startDate, startTime), Date(endDate, endTime), contents)
-
-            if (event.getStartDate().getData() == searchDate)
-                tempList.add(event)
+        for (x in events) {
+            if (x.getStartDate().getData() == searchDate) {
+                tempList.add(x)
+            }
         }
+
         return tempList
     }
 }
