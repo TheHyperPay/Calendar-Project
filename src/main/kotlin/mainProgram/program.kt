@@ -119,6 +119,15 @@ object programList {
         val formattedEndDate = "${formatDate(endDateParts[0])}"
         val formattedEndTime = "${formatTime(endDateParts[1])}"
 
+        if(!Tstring.compare(formattedStartDate, formattedEndDate)){
+            println("종료일자가 시작일자보다 빠릅니다.")
+            return
+        }
+        if(formattedEndDate==formattedStartDate && !Tstring.compare(formattedStartTime, formattedEndTime)){
+            println("종료시간이 시작시간보다 빠릅니다.")
+            return
+        }
+
         print("이벤트 세부사항을 입력하시오>>")
         val contents = readln()
 

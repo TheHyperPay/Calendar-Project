@@ -33,8 +33,7 @@ class Event(private var title: String, private var startDatetime: Date, private 
 object TodayEvents{
     public fun printEvents(year:Int, month:Int, day:Int) {
         var todayEvents:ArrayList<Event> = sortTime(
-            EventManager.searchEvents(Date("$year/${Tstring.formatNumber(month)}/${Tstring.formatNumber(day)}", "00:00:00"),
-            false)
+            EventManager.searchEvents(Date("$year/${Tstring.formatNumber(month)}/${Tstring.formatNumber(day)}", "00:00:00"))
         )
 
         var tempEvents:ArrayList<Event> = ArrayList()
@@ -42,7 +41,8 @@ object TodayEvents{
         for(x in todayEvents)
         {
             tempEvents.add(x)
-            if(checkEventIsDouble(tempEvents, x))
+
+            if(checkEventIsDouble(todayEvents, x))
                 println("이벤트명: ${x.getTitle()}\t${x.getEndDate().getTime()}\t종료")
             else
                 println("이벤트명: ${x.getTitle()}\t${x.getStartDate().getTime()}\t시작")
@@ -85,8 +85,16 @@ object TodayEvents{
                 sortedEventList.add(x)
             }
         }
-
         return sortedEventList
+
+        /*
+        var tempEventList:ArrayList<Event> = ArrayList()
+        var tempEventPoint:ArrayList<Int> = ArrayList()
+        for(x in eventList){
+
+        }
+
+        return tempEventList*/
     }
     private fun checkEventIsDouble(tempEventList: ArrayList<Event>, event:Event):Boolean{
         val count = tempEventList.count{it == event}
@@ -95,14 +103,14 @@ object TodayEvents{
             return true
         return false
     }
-    private fun getMaxDayOfMonth(year: Int, month: Int): Int {
+    /*private fun getMaxDayOfMonth(year: Int, month: Int): Int {
         return when (month) {
             1, 3, 5, 7, 8, 10, 12 -> 31
             4, 6, 9, 11 -> 30
             2 -> if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) 29 else 28
             else -> throw IllegalArgumentException("달 선언 오류: $month")
         }
-    }
+    }*/
 }
 
 object EventManager {
@@ -126,13 +134,13 @@ object EventManager {
         eventList.add(event)
     }
 
-    fun searchEvents(date:Date, isCheckTime:Boolean): ArrayList<Event> {
+    fun searchEvents(date:Date): ArrayList<Event> {
         var tempList: ArrayList<Event> = ArrayList()
         for(x in eventList) {
-            if(x.getStartDate().getData()==date.getData()) {
+            if(x.getStartDate().getData()==date.getData())
                 tempList.add(x)
-                continue
-            }
+            if(x.getEndDate().getData()==date.getData())
+                tempList.add(x)
         }
         return tempList
     }
