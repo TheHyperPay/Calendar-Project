@@ -30,88 +30,48 @@ class Event(private var title: String, private var startDatetime: Date, private 
     }
 }
 
+
+
+//오늘 일정을 판단하기 위해 사용하는 데이터 클래스.
+//이벤트를 저장하되 isStart로 이벤트의 시작에 접근할지 종료에 접근할지 지정
+data class TodayEventData(val eventName:Event, val isStart:Boolean)
+
+//하루 일정 관련 object
 object TodayEvents{
+    //오늘 일정을 콘솔창에 출력하는 함수
     public fun printEvents(year:Int, month:Int, day:Int) {
-        var todayEvents:ArrayList<Event> = sortTime(
-            EventManager.searchEvents(Date("$year/${Tstring.formatNumber(month)}/${Tstring.formatNumber(day)}", "00:00:00"))
-        )
 
-        var tempEvents:ArrayList<Event> = ArrayList()
-        println("${year}년 ${month}월 ${day}일의 하루 일정")
-        for(x in todayEvents)
+        val todayEventDataList:List<TodayEventData> =
+            sortTime(EventManager.searchEvents(Date("${year}/${month}/${day}", "00:00:00")))
+
+        println("${year}년 ${month}월 ${day}일 하루 일정")
+        for(x in todayEventDataList)
         {
-            tempEvents.add(x)
-
-            if(checkEventIsDouble(todayEvents, x))
-                println("이벤트명: ${x.getTitle()}\t${x.getEndDate().getTime()}\t종료")
+            if(x.isStart)
+                println("${x.eventName.getTitle()}\t${x.eventName.getStartDate().getTime()}\t시작")
             else
-                println("이벤트명: ${x.getTitle()}\t${x.getStartDate().getTime()}\t시작")
+                println("${x.eventName.getTitle()}\t${x.eventName.getEndDate().getTime()}\t종료")
         }
     }
 
-    private fun sortTime(eventList: ArrayList<Event>): ArrayList<Event>
-    {
-        var sortedEventList: ArrayList<Event> = eventList.sortedBy { it.getStartDate().getTime() }
-            .toMutableList() as ArrayList<Event>
-
-        //EndTime 삽입
-        for (x in eventList) {
-            var tempEventList: ArrayList<Event> = ArrayList()
-            var shouldAddX = true
-
-            for (y in sortedEventList) {
-                tempEventList.add(y)
-
-                if (x == y)
-                    continue
-
-                if (checkEventIsDouble(tempEventList, y)) {
-                    if (Tstring.compare(x.getEndDate().getTime(), y.getEndDate().getTime())) {
-                        sortedEventList.add(tempEventList.count() - 1, x)
-                        shouldAddX = false
-                        break
-                    }
-                } else {
-                    if (Tstring.compare(x.getEndDate().getTime(), y.getStartDate().getTime())) {
-                        sortedEventList.add(tempEventList.count() - 1, x)
-                        shouldAddX = false
-                        break
-                    }
-                }
-            }
-
-            // 순회가 끝난 후 맨 마지막에 추가
-            if (shouldAddX) {
-                sortedEventList.add(x)
-            }
-        }
-        return sortedEventList
-
-        /*
-        var tempEventList:ArrayList<Event> = ArrayList()
-        var tempEventPoint:ArrayList<Int> = ArrayList()
-        for(x in eventList){
-
-        }
-
-        return tempEventList*/
+    //오늘 일정을 시간이 빠른 순서대로 정렬하는 함수
+    private fun sortTime(eventList: List<TodayEventData>): List<TodayEventData> {
+        return eventList.sortedBy { pickupTimeFromEvent(it) }
     }
-    private fun checkEventIsDouble(tempEventList: ArrayList<Event>, event:Event):Boolean{
-        val count = tempEventList.count{it == event}
-        //FIXME 동일 이벤트가 여러 가지 있을 떄 예외 처리 필수
-        if(count == 2)
-            return true
-        return false
+
+    //지금 이벤트가 종료 기준인지 시작 기준인지 구분하기 위한 함수
+    private fun pickupTimeFromEvent(event:TodayEventData):String{
+        if(event.isStart)
+            return event.eventName.getStartDate().getTime()
+        else
+            return event.eventName.getEndDate().getTime()
     }
-    /*private fun getMaxDayOfMonth(year: Int, month: Int): Int {
-        return when (month) {
-            1, 3, 5, 7, 8, 10, 12 -> 31
-            4, 6, 9, 11 -> 30
-            2 -> if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) 29 else 28
-            else -> throw IllegalArgumentException("달 선언 오류: $month")
-        }
-    }*/
 }
+
+
+
+
+
 
 object EventManager {
     var eventList: ArrayList<Event> = ArrayList()
@@ -134,13 +94,15 @@ object EventManager {
         eventList.add(event)
     }
 
-    fun searchEvents(date:Date): ArrayList<Event> {
-        var tempList: ArrayList<Event> = ArrayList()
+    fun searchEvents(date:Date): ArrayList<TodayEventData> {
+        var tempList: ArrayList<TodayEventData> = ArrayList()
         for(x in eventList) {
-            if(x.getStartDate().getData()==date.getData())
-                tempList.add(x)
-            if(x.getEndDate().getData()==date.getData())
-                tempList.add(x)
+            if(x.getStartDate().getData()==date.getData()){
+                tempList.add(TodayEventData(x, true))
+            }
+            if(x.getEndDate().getData()==date.getData()){
+                tempList.add(TodayEventData(x, false))
+            }
         }
         return tempList
     }
