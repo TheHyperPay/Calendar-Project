@@ -4,7 +4,9 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+//오늘의 운세를 출력하기 위한 클래스
 object TodayHoroscope {
+    //태어난 연도의 띠를 출력하는 함수
     fun userZodiac(birth: Int): String {
         val zodiac = birth % 12
         return when (zodiac) {
@@ -23,14 +25,15 @@ object TodayHoroscope {
         }
     }
 
+    //오늘의 운세를 알 수 있는 함수
     fun todayHoroscope(birth: Int): String {
         val dateType = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
         val dateString = dateType.format(Date())
         val file: String = "horoscope.txt"
         val lines = File(file).readLines()
         val zodiac = birth % 12
-        val randomMessage = lines[(zodiac + birth + dateString.toInt()) % lines.size]
-
+        val randomMessage = lines[((zodiac * birth + if (dateString.hashCode() > 0) dateString.hashCode() else -1*dateString.hashCode()) % lines.size)]
+        
         return "오늘의 ${birth}년생 ${userZodiac(birth)} 랜덤 운세: $randomMessage"
     }
 }

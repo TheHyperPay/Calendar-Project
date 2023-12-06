@@ -7,28 +7,9 @@ import tools.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Event(private var title: String, private var startDatetime: Date, private var endDatetime: Date, private var contents: String)
-{
-    public fun getTitle():String {
-        return title
-    }
-    public fun getStartDate():Date {
-        return startDatetime
-    }
-    public fun getEndDate():Date {
-        return endDatetime
-    }
-    public fun getContents():String {
-        return contents
-    }
-    private fun compareTimeGap(dt_start: Date, dt_end: Date): Boolean {
-        val result=dt_start.getData().compareTo(dt_end.getData())
 
-        if(result>0)
-            return false
-        return true
-    }
-}
+//이벤트 관련 정보를 담는 데이터 클래스
+data class Event(val title: String, val startDatetime: Date, val endDatetime: Date, val contents: String)
 
 
 
@@ -48,9 +29,9 @@ object TodayEvents{
         for(x in todayEventDataList)
         {
             if(x.isStart)
-                println("${x.eventName.getTitle()}\t${x.eventName.getStartDate().getTime()}\t시작")
+                println("${x.eventName.title}\t${x.eventName.startDatetime.time}\t시작")
             else
-                println("${x.eventName.getTitle()}\t${x.eventName.getEndDate().getTime()}\t종료")
+                println("${x.eventName.title}\t${x.eventName.endDatetime.time}\t종료")
         }
     }
 
@@ -62,9 +43,9 @@ object TodayEvents{
     //지금 이벤트가 종료 기준인지 시작 기준인지 구분하기 위한 함수
     private fun pickupTimeFromEvent(event:TodayEventData):String{
         if(event.isStart)
-            return event.eventName.getStartDate().getTime()
+            return event.eventName.startDatetime.time
         else
-            return event.eventName.getEndDate().getTime()
+            return event.eventName.endDatetime.time
     }
 }
 
@@ -72,11 +53,12 @@ object TodayEvents{
 
 
 
-
+//이벤트 클래스를 종합적으로 다루는 클래스
 object EventManager {
     var eventList: ArrayList<Event> = ArrayList()
     val file: String="File.txt"
 
+    //파일에 연결하여 데이터를 모두 가져오는 함수
     fun fileLink():Unit{
         val jsonString = File(file).readText()
         val events = Gson().fromJson(jsonString, Array<Event>::class.java)
@@ -84,29 +66,34 @@ object EventManager {
         eventList.addAll(events)
     }
 
+    //파일에 데이터를 저장하는 함수
     fun fileInsert() : Unit {
         val jsonString = Gson().toJson(eventList)
         File(file).writeText(jsonString)
         println("이벤트 저장 완료")
     }
 
+    //이벤트 정보를 이벤트 매니저 리스트에 저장하는 함수
     fun insertEvent(event:Event):Unit {
         eventList.add(event)
     }
 
+    //이벤트를 Date 클래스의 일자를 모두 찾는 함수
+    //해당 클래스는 TodayEvent에서만 사용한다.
     fun searchEvents(date:Date): ArrayList<TodayEventData> {
         var tempList: ArrayList<TodayEventData> = ArrayList()
         for(x in eventList) {
-            if(x.getStartDate().getData()==date.getData()){
+            if(x.startDatetime.date==date.date){
                 tempList.add(TodayEventData(x, true))
             }
-            if(x.getEndDate().getData()==date.getData()){
+            if(x.endDatetime.date==date.date){
                 tempList.add(TodayEventData(x, false))
             }
         }
         return tempList
     }
 
+    //파일에 직접 접근하여 입력 일자의 이벤트 목록을 찾는 함수
     fun searchSchedule(searchDate : String) : ArrayList<Event> {
         val tempList: ArrayList<Event> = ArrayList()
 
@@ -115,12 +102,11 @@ object EventManager {
         val events = Gson().fromJson(jsonString, Array<Event>::class.java)
 
         for (x in events) {
-            if (x.getStartDate().getData() == searchDate) {
+            if (x.startDatetime.date == searchDate) {
                 tempList.add(x)
             }
         }
 
         return tempList
     }
-
 }

@@ -4,9 +4,11 @@ import event.EventManager
 import tools.*
 import java.util.*
 
+//캘린더 출력을 위한 클래스
 class CalendarList(private val year: Int, private val month: Int) {
     private val calendar: Calendar = Calendar.getInstance()
 
+    //현재 달의 캘린더를 콘솔창에 출력합니다
     public fun printCalendar(): Unit {
         calendar.set(year, month - 1, 1) // 월은 0부터 시작하므로 month - 1
 
@@ -25,13 +27,11 @@ class CalendarList(private val year: Int, private val month: Int) {
             printDay()
             currentDay++
             calendar.set(Calendar.DAY_OF_MONTH, currentDay)
-
-            /*if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                println()
-            }*/
         }
     }
 
+    //캘린더에 작성할 일에 관한 정보를 출력하는 함수
+    //각 일당 이벤트 정보를 각각 출력하고자 함
     private fun printDay(): Unit {
         val dayOfMonth = Tstring.formatNumber(calendar.get(Calendar.DAY_OF_MONTH))
         print(dayOfMonth)
@@ -52,19 +52,5 @@ class CalendarList(private val year: Int, private val month: Int) {
     }
 }
 
-class Date {
-    private val date:String
-    private val time:String
-    constructor(date:String, time:String) {
-        this.date=date
-        this.time=time
-    }
-
-    public fun getData(): String {
-        return date
-    }
-
-    public fun getTime(): String {
-        return time
-    }
-}
+//시간 관련 정보를 담은 데이터 클래스
+data class Date (val date:String, val time:String)
