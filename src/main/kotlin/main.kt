@@ -1,8 +1,10 @@
 import mainProgram.programList
-import event.EventFile
+import EventFile.EventFile
 
 fun main() {
+    //기능 선택 전 파일의 이벤트 목록을 불러오기
     EventFile.fileLink()
+
     while(true) {
         print("메뉴 번호를 선택하시오 (1:종료, 2:달력 조회, 3:이벤트 추가, 4:이벤트 조회, 5:하루 일정, 6:오늘의 운세)>>")
 
@@ -38,5 +40,4 @@ fun main() {
         }
         println()
     }
-
 }

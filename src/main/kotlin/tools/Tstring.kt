@@ -21,6 +21,7 @@ object Tstring{
     }
 
     //연도를 정확하게 입력했는지 판단하는 함수
+    //여기선 기원전을 판단하기 힘드므로 제외
     public fun rightYear(year : Int) : Boolean {
         if(year < 1) {
             println("양의 정수를 입력하시오")
@@ -42,6 +43,7 @@ object Tstring{
 
     //일을 정확하게 입력했는지 판단하는 함수
     public fun rightDay(year : Int, month : Int, day : Int) : Boolean {
+        //지정한 연도, 월月의 일日이 몇일 있는지 파악
         val lastDay = YearMonth.of(year, month).lengthOfMonth()
         if(day < 1 || day > lastDay ) {
             println("1일부터 ${lastDay}일 중 하나를 고르시오")
@@ -72,10 +74,10 @@ object Tstring{
     }
 
     //두 시간의 대소를 비교하여 Boolean 타입으로 바꿔버리는 함수
-    //str1=큰 시간(19:00:00), str2=작은 시간(04:00:00)을 입력하시면 false가 나옵니다
     public fun compare(str1: String, str2: String): Boolean{
         val comparisonResult = str1.compareTo(str2)
 
+        //str1=큰 시간(19:00:00), str2=작은 시간(04:00:00)을 입력하시면 false가 나옴
         return when{
             comparisonResult>0 -> false
             comparisonResult<0 -> true
