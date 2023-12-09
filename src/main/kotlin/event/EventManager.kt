@@ -23,7 +23,7 @@ object TodayEvents{
     public fun printEvents(year:Int, month:Int, day:Int) {
 
         val todayEventDataList:List<TodayEventData> =
-            sortTime(EventManager.searchEvents(Date("${year}/${month}/${day}", "00:00:00")))
+            sortTime(EventManager.searchEvents(Date("${year}/${Tstring.formatNumber(month)}/${Tstring.formatNumber(day)}", "00:00:00")))
 
         println("${year}년 ${month}월 ${day}일 하루 일정")
         for(x in todayEventDataList)
@@ -49,29 +49,49 @@ object TodayEvents{
     }
 }
 
-
-
-
-
-//이벤트 클래스를 종합적으로 다루는 클래스
-object EventManager {
-    var eventList: ArrayList<Event> = ArrayList()
+//파일 관련 클래스
+object EventFile
+{
     val file: String="File.txt"
 
     //파일에 연결하여 데이터를 모두 가져오는 함수
     fun fileLink():Unit{
         val jsonString = File(file).readText()
         val events = Gson().fromJson(jsonString, Array<Event>::class.java)
-        eventList.clear()
-        eventList.addAll(events)
+        EventManager.eventList.clear()
+        EventManager.eventList.addAll(events)
     }
 
     //파일에 데이터를 저장하는 함수
     fun fileInsert() : Unit {
-        val jsonString = Gson().toJson(eventList)
+        val jsonString = Gson().toJson(EventManager.eventList)
         File(file).writeText(jsonString)
         println("이벤트 저장 완료")
     }
+
+    //파일에 직접 접근하여 입력 일자의 이벤트 목록을 찾는 함수
+    fun searchSchedule(searchDate : String) : ArrayList<Event> {
+        val tempList: ArrayList<Event> = ArrayList()
+
+        val jsonString = File(file).readText()
+
+        val events = Gson().fromJson(jsonString, Array<Event>::class.java)
+
+        for (x in events) {
+            if (x.startDatetime.date == searchDate) {
+                tempList.add(x)
+            }
+        }
+
+        return tempList
+    }
+}
+
+
+//이벤트 클래스를 종합적으로 다루는 클래스
+object EventManager {
+    var eventList: ArrayList<Event> = ArrayList()
+
 
     //이벤트 정보를 이벤트 매니저 리스트에 저장하는 함수
     fun insertEvent(event:Event):Unit {
@@ -93,20 +113,5 @@ object EventManager {
         return tempList
     }
 
-    //파일에 직접 접근하여 입력 일자의 이벤트 목록을 찾는 함수
-    fun searchSchedule(searchDate : String) : ArrayList<Event> {
-        val tempList: ArrayList<Event> = ArrayList()
 
-        val jsonString = File(file).readText()
-
-        val events = Gson().fromJson(jsonString, Array<Event>::class.java)
-
-        for (x in events) {
-            if (x.startDatetime.date == searchDate) {
-                tempList.add(x)
-            }
-        }
-
-        return tempList
-    }
 }

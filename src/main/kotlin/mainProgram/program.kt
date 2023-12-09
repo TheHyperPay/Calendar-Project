@@ -5,6 +5,7 @@ import calendar.Date
 import event.Event
 import event.EventManager
 import event.TodayEvents
+import event.EventFile
 import tools.*
 import Horoscope.TodayHoroscope
 import java.lang.NumberFormatException
@@ -78,7 +79,7 @@ object programList {
         val e = Event(title, Date(formattedStartDate, formattedStartTime), Date(formattedEndDate, formattedEndTime), contents)
 
         EventManager.insertEvent(e)
-        EventManager.fileInsert()
+        EventFile.fileInsert()
     }
 
     fun showSchedule() {
@@ -90,7 +91,7 @@ object programList {
             return
         }
 
-        val event : ArrayList<Event> = EventManager.searchSchedule(Tstring.formatDate(searchDate))
+        val event : ArrayList<Event> = EventFile.searchSchedule(Tstring.formatDate(searchDate))
 
         // searchSchedule의 tempList가 비었다면 사용자가 쓴 날짜에 일정이 없다는 뜻이므로 이벤트x
         // tempList가 있다면 사용자가 쓴 날짜에 일정이 있으므로 출력
